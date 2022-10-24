@@ -22,6 +22,8 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
+import static coms.w4156.moviewishlist.utils.StreamingConstants.*;
+
 @ExtendWith(MockitoExtension.class)
 public class WatchModeServiceTests {
 
@@ -77,21 +79,21 @@ public class WatchModeServiceTests {
         /** Init all services that subscription based */
 
         netflix = new Source();
-        netflix.setName("Netflix");
+        netflix.setName(NETFLIX_NAME);
 
         amazonPrime = new Source();
-        amazonPrime.setName("Amazon Prime");
+        amazonPrime.setName(AMAZON_PRIME_NAME);
 
         hulu = new Source();
-        hulu.setName("Hulu");
+        hulu.setName(HULU_NAME);
 
         shudder = new Source();
-        shudder.setName("Shudder");
+        shudder.setName(SHUDDER_NAME);
 
         allSub = new Source[]{netflix, amazonPrime, hulu, shudder};
 
         for(Source subService : allSub) {
-            subService.setType("sub");
+            subService.setType(SUBSCRIPTION_TYPE);
         }
 
         /** End init'ing all services that are subscription based*/
@@ -99,42 +101,42 @@ public class WatchModeServiceTests {
         /** Begin init'ing all services for buying movies*/
 
         vuduBuy = new Source();
-        vuduBuy.setName("VUDU- to buy");
+        vuduBuy.setName(VUDU_NAME);
 
         appleTVBuy = new Source();
-        appleTVBuy.setName("Apple TV - to buy");
+        appleTVBuy.setName(APPLE_TV_NAME);
 
         amazonVideoBuy = new Source();
-        amazonVideoBuy.setName("Amazon Video - to buy");
+        amazonVideoBuy.setName(AMAZON_VIDEO_NAME);
 
         iTunesBuy = new Source();
-        iTunesBuy.setName("iTunes - to buy");
+        iTunesBuy.setName(ITUNES_NAME);
 
         allBuy = new Source[]{vuduBuy, appleTVBuy, amazonVideoBuy, iTunesBuy};
 
         for(Source buyService : allBuy) {
-            buyService.setType("buy");
+            buyService.setType(BUY_TYPE);
         }
 
         /** End init'ing all services for buying movies*/
 
         /** End init'ing all services for renting  movies*/
         vuduRent = new Source();
-        vuduRent.setName("VUDU- to rent");
+        vuduRent.setName(VUDU_NAME);
 
         appleTVRent = new Source();
-        appleTVRent.setName("Apple TV - to rent");
+        appleTVRent.setName(APPLE_TV_NAME);
 
         amazonVideoRent = new Source();
-        amazonVideoRent.setName("Amazon Video - to rent");
+        amazonVideoRent.setName(AMAZON_VIDEO_NAME);
 
         iTunesRent = new Source();
-        iTunesRent.setName("iTunes - to rent");
+        iTunesRent.setName(ITUNES_NAME);
 
         allRent = new Source[]{vuduRent, appleTVRent, amazonVideoRent, iTunesRent};
 
         for(Source rentService : allRent) {
-            rentService.setType("rent");
+            rentService.setType(RENT_TYPE);
         }
         /** End init'ing all services for renting movies*/
 
@@ -146,20 +148,8 @@ public class WatchModeServiceTests {
 
     @Test
     public void testAvailable() {
-        Source netflix = new Source();
-        netflix.setName("Netflix");
-        netflix.setType("sub");
 
-        Source amazon = new Source();
-        amazon.setName("Amazon");
-        amazon.setType("sub");
-
-        Source vudu = new Source();
-        vudu.setName("VUDU");
-        vudu.setType("buy");
-
-        // Source[] sourcesAvailableFreeWithSubscription = new Source[]{netflix, amazon};
-        Source[] allSources = new Source[]{netflix, amazon, vudu};
+        Source[] allSources = new Source[]{netflix, amazonPrime, vuduRent};
 
         Mockito
                 .when(restTemplate.getForEntity(watchmode_url, Source[].class))
