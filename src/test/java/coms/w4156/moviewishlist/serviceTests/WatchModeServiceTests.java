@@ -142,8 +142,6 @@ public class WatchModeServiceTests {
                 .toArray(size -> (Source[]) Array.newInstance(allBuy.getClass().getComponentType(), size));
 
        allSources = concatArrays(rentAndBuySources, allSub);
-        // TODO
-        // Abstract this out into a method and create an array for all sources.
     }
 
     @Test
