@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import static coms.w4156.moviewishlist.utils.StreamingConstants.STREAMING_BUY_ENDPOINT;
-import static coms.w4156.moviewishlist.utils.StreamingConstants.STREAMING_RENT_ENDPOINT;
+import static coms.w4156.moviewishlist.utils.StreamingConstants.*;
 
 /**
  * Controller for all endpoints that have to do with accessing
@@ -35,7 +34,7 @@ public class StreamingController {
      * does not return services where you'd have to buy or rent the movie)
      * @return A list of streaming services.
      */
-    @GetMapping("/available")
+    @GetMapping(STREAMING_TEST_ENDPOINT)
     public List<String> streamingServices() {
         return wms.testResponse();
     }
@@ -48,7 +47,7 @@ public class StreamingController {
      * @return A list of all the streaming services this movie is available
      * on for free with subscription.
      */
-    @GetMapping("/freeWithSub/{id}")
+    @GetMapping(STREAMING_SUB_ENDPOINT + "/{id}")
     @ResponseBody
     public List<String> getSourcesFreeWithSub(final @PathVariable String id) {
 

@@ -42,13 +42,13 @@ public class StreamingTests {
 
         Mockito.when(wms.testResponse()).thenReturn(mockList);
 
-        this.mockMvc.perform(get("/streaming/available"))
+        this.mockMvc.perform(get(STREAMING_BASE+STREAMING_TEST_ENDPOINT))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(
                         HULU_NAME)))
                 .andDo(print());
 
-        this.mockMvc.perform(get("/streaming/available"))
+        this.mockMvc.perform(get(STREAMING_BASE+STREAMING_TEST_ENDPOINT))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(
                         HBO_NAME)))
@@ -68,13 +68,13 @@ public class StreamingTests {
 
         Mockito.when(wms.getFreeWithSubSourcesById("0")).thenReturn(mockList);
 
-        this.mockMvc.perform(get("/streaming/freeWithSub/0"))
+        this.mockMvc.perform(get(STREAMING_BASE+STREAMING_SUB_ENDPOINT+"/0"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(
                         HBO_NAME)))
                 .andDo(print());
 
-        this.mockMvc.perform(get("/streaming/freeWithSub/0"))
+        this.mockMvc.perform(get(STREAMING_BASE+STREAMING_SUB_ENDPOINT+"/0"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(
                         HULU_NAME)))
@@ -95,7 +95,7 @@ public class StreamingTests {
 
         Mockito.when(wms.getFreeWithSubSourcesById("0")).thenReturn(mockList);
 
-        this.mockMvc.perform(get("/streaming/freeWithSub"))
+        this.mockMvc.perform(get(STREAMING_BASE+STREAMING_SUB_ENDPOINT))
                 .andExpect(status().is4xxClientError())
                 .andDo(print());
     }
@@ -113,13 +113,13 @@ public class StreamingTests {
 
         Mockito.when(wms.getBuySourcesById("0")).thenReturn(mockList);
 
-        this.mockMvc.perform(get("/streaming/availToBuy/0"))
+        this.mockMvc.perform(get(STREAMING_BASE+STREAMING_BUY_ENDPOINT+"/0"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(
                         VUDU_NAME)))
                 .andDo(print());
 
-        this.mockMvc.perform(get("/streaming/availToBuy/0"))
+        this.mockMvc.perform(get(STREAMING_BASE+STREAMING_BUY_ENDPOINT+"/0"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(
                         APPLE_TV_NAME)))
@@ -140,7 +140,7 @@ public class StreamingTests {
 
         Mockito.when(wms.getBuySourcesById("0")).thenReturn(mockList);
 
-        this.mockMvc.perform(get("/streaming/availToBuy"))
+        this.mockMvc.perform(get(STREAMING_BASE+STREAMING_BUY_ENDPOINT))
                 .andExpect(status().is4xxClientError())
                 .andDo(print());
     }
@@ -158,13 +158,13 @@ public class StreamingTests {
 
         Mockito.when(wms.getRentSourcesById("0")).thenReturn(mockList);
 
-        this.mockMvc.perform(get("/streaming/availToRent/0"))
+        this.mockMvc.perform(get(STREAMING_BASE+STREAMING_RENT_ENDPOINT+"/0"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(
                         VUDU_NAME)))
                 .andDo(print());
 
-        this.mockMvc.perform(get("/streaming/availToRent/0"))
+        this.mockMvc.perform(get(STREAMING_BASE+STREAMING_RENT_ENDPOINT+"/0"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(
                         APPLE_TV_NAME)))
@@ -185,7 +185,7 @@ public class StreamingTests {
 
         Mockito.when(wms.getRentSourcesById("0")).thenReturn(mockList);
 
-        this.mockMvc.perform(get("/streaming/availToRent"))
+        this.mockMvc.perform(get(STREAMING_BASE+STREAMING_RENT_ENDPOINT))
                 .andExpect(status().is4xxClientError())
                 .andDo(print());
     }
