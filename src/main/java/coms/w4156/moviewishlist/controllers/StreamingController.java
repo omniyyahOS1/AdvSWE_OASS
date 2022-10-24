@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import static coms.w4156.moviewishlist.utils.StreamingConstants.STREAMING_BUY_ENDPOINT;
+import static coms.w4156.moviewishlist.utils.StreamingConstants.STREAMING_RENT_ENDPOINT;
+
 /**
  * Controller for all endpoints that have to do with accessing
  * the WatchMode API.
@@ -50,5 +53,33 @@ public class StreamingController {
     public List<String> getSourcesFreeWithSub(final @PathVariable String id) {
 
         return wms.getFreeWithSubSourcesById(id);
+    }
+
+    /**
+     * Endpoint for getting all sources where a movie is available on to rent.
+     * Takes in a movie's WatchMode ID in order to query the WatchMode API.
+     * @param id The WatchMode ID for the movie we are interested in.
+     * @return A list of all the streaming services this movie is available
+     * on to rent.
+     */
+    @GetMapping(STREAMING_RENT_ENDPOINT + "/{id}")
+    @ResponseBody
+    public List<String> getSourcesRent(final @PathVariable String id) {
+
+        return wms.getRentSourcesById(id);
+    }
+
+    /**
+     * Endpoint for getting all sources where a movie is available on to buy.
+     * Takes in a movie's WatchMode ID in order to query the WatchMode API.
+     * @param id The WatchMode ID for the movie we are interested in.
+     * @return A list of all the streaming services this movie is available
+     * on to buy.
+     */
+    @GetMapping(STREAMING_BUY_ENDPOINT + "/{id}")
+    @ResponseBody
+    public List<String> getSourcesBuy(final @PathVariable String id) {
+
+        return wms.getBuySourcesById(id);
     }
 }

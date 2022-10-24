@@ -54,16 +54,16 @@ public final class StreamingConstants {
     public static final String STREAMING_BASE = "/streaming";
 
     /** Relative endpoint of the streaming test endpoint.*/
-    public static final String STREAMING_TEST = "/available";
+    public static final String STREAMING_TEST_ENDPOINT = "/available";
 
     /** Relative endpoint of the subscription by id endpoint.*/
-    public static final String STREAMING_SUB = "/freeWithSub";
+    public static final String STREAMING_SUB_ENDPOINT = "/freeWithSub";
 
     /** Relative endpoint of the buy by id endpoint.*/
-    public static final String STREAMING_BUY = "/availToBuy";
+    public static final String STREAMING_BUY_ENDPOINT = "/availToBuy";
 
     /** Relative endpoint of the rent by id endpoint.*/
-    public static final String STREAMING_RENT = "/availToRent";
+    public static final String STREAMING_RENT_ENDPOINT = "/availToRent";
 
     /*                  END DEFINE SOURCE ENDPOINTS                           */
 
