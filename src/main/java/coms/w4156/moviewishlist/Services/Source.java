@@ -7,7 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.EqualsAndHashCode;
 
-import static coms.w4156.moviewishlist.utils.Constants.*;
+import static coms.w4156.moviewishlist.utils.StreamingConstants.*;
 
 /**
  * Class to represent a WatchMode streaming source. A streaming source can be
