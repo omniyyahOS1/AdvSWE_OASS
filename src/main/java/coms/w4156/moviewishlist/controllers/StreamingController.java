@@ -11,7 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import static coms.w4156.moviewishlist.utils.StreamingConstants.*;
+import static coms.w4156.moviewishlist.utils.StreamingConstants.STREAMING_BUY_ENDPOINT;
+import static coms.w4156.moviewishlist.utils.StreamingConstants.STREAMING_RENT_ENDPOINT;
+import static coms.w4156.moviewishlist.utils.StreamingConstants.STREAMING_SUB_ENDPOINT;
+import static coms.w4156.moviewishlist.utils.StreamingConstants.STREAMING_TEST_ENDPOINT;
 
 /**
  * Controller for all endpoints that have to do with accessing
