@@ -593,4 +593,78 @@ public class WatchModeServiceTests {
     }
 
     /****************END Test getRentSourcesById function**********************/
+
+    /******************START Test Uniqueness of Sources************************/
+    @Test
+    public void testGetFreeWithSubSourcesByIdRepeat() {
+
+        /** Let's say that movie 1 is available only to buy
+         */
+
+        String movie1URL = wms.makeURL("1");
+
+        Source[] repeatedSources = concatArrays(allSources, allSources);
+
+        Mockito
+                .when(restTemplate.getForEntity(movie1URL, Source[].class))
+                .thenReturn(new ResponseEntity(repeatedSources, HttpStatus.OK));
+
+        List<String> returnedSources = wms.getFreeWithSubSourcesById("1");
+
+        Assertions.assertEquals(allSub.length, returnedSources.size());
+
+        // Assert that all the 'Rent' sources are in there
+        for(Source buySource : allSub) {
+            Assertions.assertTrue(returnedSources.contains(buySource.getName()));
+        }
+    }
+
+    @Test
+    public void testGetRentSourcesByIdRepeat() {
+
+        /** Let's say that movie 1 is available only to buy
+         */
+
+        String movie1URL = wms.makeURL("1");
+
+        Source[] repeatedSources = concatArrays(allSources, allSources);
+
+        Mockito
+                .when(restTemplate.getForEntity(movie1URL, Source[].class))
+                .thenReturn(new ResponseEntity(repeatedSources, HttpStatus.OK));
+
+        List<String> returnedSources = wms.getRentSourcesById("1");
+
+        Assertions.assertEquals(allRent.length, returnedSources.size());
+
+        // Assert that all the 'Rent' sources are in there
+        for(Source buySource : allRent) {
+            Assertions.assertTrue(returnedSources.contains(buySource.getName()));
+        }
+    }
+
+    @Test
+    public void testGetBuySourcesByIdRepeat() {
+
+        /** Let's say that movie 1 is available only to buy
+         */
+
+        String movie1URL = wms.makeURL("1");
+
+        Source[] repeatedSources = concatArrays(allSources, allSources);
+
+        Mockito
+                .when(restTemplate.getForEntity(movie1URL, Source[].class))
+                .thenReturn(new ResponseEntity(repeatedSources, HttpStatus.OK));
+
+        List<String> returnedSources = wms.getBuySourcesById("1");
+
+        Assertions.assertEquals(allBuy.length, returnedSources.size());
+
+        // Assert that all the 'Rent' sources are in there
+        for(Source buySource : allBuy) {
+            Assertions.assertTrue(returnedSources.contains(buySource.getName()));
+        }
+    }
+    /*******************END Test Uniqueness of Sources*************************/
 }
