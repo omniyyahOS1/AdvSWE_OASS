@@ -90,6 +90,7 @@ public class WatchModeService {
         return Arrays.stream(allSources)
                 .filter(Source::isFreeWithSubscription)
                 .map(Source::getName)
+                .distinct()
                 .collect(Collectors.toList());
     }
 
@@ -107,6 +108,7 @@ public class WatchModeService {
         return Arrays.stream(allSources)
                 .filter(Source::isRentSource)
                 .map(Source::getName)
+                .distinct()
                 .collect(Collectors.toList());
     }
 
@@ -124,6 +126,7 @@ public class WatchModeService {
         return Arrays.stream(allSources)
                 .filter(Source::isBuySource)
                 .map(Source::getName)
+                .distinct()
                 .collect(Collectors.toList());
     }
 
