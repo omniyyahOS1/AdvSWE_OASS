@@ -50,19 +50,20 @@ public class User implements ModelInterface<String> {
      * The list of wishlists owned by this user.
      */
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @Getter
     private List<Wishlist> wishlists;
 
     /**
      * Constructor for the User class.
-     * @param email - Email of the user to be created
-     * @param name - Name of the user
+     * 
+     * @param email    - Email of the user to be created
+     * @param name     - Name of the user
      * @param password - Password of the user
      */
     public User(
-        @JsonProperty final String email,
-        @JsonProperty final String name,
-        @JsonProperty final String password
-    ) {
+            @JsonProperty final String email,
+            @JsonProperty final String name,
+            @JsonProperty final String password) {
         this.email = email;
         this.name = name;
         this.password = hashPassword(password);
@@ -70,17 +71,17 @@ public class User implements ModelInterface<String> {
 
     /**
      * Constructor for the User class.
-     * @param email - Email of the user to be created
-     * @param name - Name of the user
-     * @param password - Password of the user
+     * 
+     * @param email     - Email of the user to be created
+     * @param name      - Name of the user
+     * @param password  - Password of the user
      * @param wishlists - List of wishlists owned by the user
      */
     public User(
-        @JsonProperty final String email,
-        @JsonProperty final String name,
-        @JsonProperty final String password,
-        @JsonProperty final List<Wishlist> wishlists
-    ) {
+            @JsonProperty final String email,
+            @JsonProperty final String name,
+            @JsonProperty final String password,
+            @JsonProperty final List<Wishlist> wishlists) {
         this.email = email;
         this.name = name;
         this.password = hashPassword(password);
@@ -100,7 +101,7 @@ public class User implements ModelInterface<String> {
      */
     public Boolean checkPassword(final String comparePassword) {
         return hashPassword(comparePassword)
-            .equals(hashPassword(this.password));
+                .equals(hashPassword(this.password));
     }
 
     /**
@@ -120,8 +121,8 @@ public class User implements ModelInterface<String> {
      */
     public List<Long> getWishlistIds() {
         return this.wishlists.stream()
-            .map(wishlist -> wishlist.getId())
-            .toList();
+                .map(wishlist -> wishlist.getId())
+                .toList();
     }
 
     /**
