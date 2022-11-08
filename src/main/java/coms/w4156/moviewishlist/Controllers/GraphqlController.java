@@ -1,17 +1,17 @@
 package coms.w4156.moviewishlist.controllers;
 
+import coms.w4156.moviewishlist.models.Movie;
+import coms.w4156.moviewishlist.models.TitleResult;
+import coms.w4156.moviewishlist.models.User;
+import coms.w4156.moviewishlist.services.MovieService;
+import coms.w4156.moviewishlist.services.UserService;
+import coms.w4156.moviewishlist.services.WatchModeService;
 import java.util.Collection;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
-
-import coms.w4156.moviewishlist.models.Movie;
-import coms.w4156.moviewishlist.models.User;
-import coms.w4156.moviewishlist.services.MovieService;
-import coms.w4156.moviewishlist.services.UserService;
 
 @Controller
 public class GraphqlController {
@@ -24,6 +24,9 @@ public class GraphqlController {
 
     @Autowired
     private MovieService movieService;
+
+    @Autowired
+    private WatchModeService watchModeService;
 
     /**
      * Fetch all users in the database.
@@ -56,5 +59,19 @@ public class GraphqlController {
     @QueryMapping
     public Collection<Movie> movies() {
         return movieService.getAll();
+    }
+
+    /**
+     * Fetch a movie by id.
+     *
+     * @param title - The title of the movie
+     *
+     * @return List of User objects
+     */
+    @QueryMapping
+    public Collection<TitleResult> searchMoviesByTitle(
+        @Argument final String title
+    ) {
+        return watchModeService.getResultsForSearchQuery(title).title_results();
     }
 }

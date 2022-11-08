@@ -1,15 +1,12 @@
 package coms.w4156.moviewishlist.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -24,6 +21,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Builder
 public class User implements ModelInterface<String> {
+
     /**
      * Email of the user.
      */
@@ -55,15 +53,16 @@ public class User implements ModelInterface<String> {
 
     /**
      * Constructor for the User class.
-     * 
+     *
      * @param email    - Email of the user to be created
      * @param name     - Name of the user
      * @param password - Password of the user
      */
     public User(
-            @JsonProperty final String email,
-            @JsonProperty final String name,
-            @JsonProperty final String password) {
+        @JsonProperty final String email,
+        @JsonProperty final String name,
+        @JsonProperty final String password
+    ) {
         this.email = email;
         this.name = name;
         this.password = hashPassword(password);
@@ -71,17 +70,18 @@ public class User implements ModelInterface<String> {
 
     /**
      * Constructor for the User class.
-     * 
+     *
      * @param email     - Email of the user to be created
      * @param name      - Name of the user
      * @param password  - Password of the user
      * @param wishlists - List of wishlists owned by the user
      */
     public User(
-            @JsonProperty final String email,
-            @JsonProperty final String name,
-            @JsonProperty final String password,
-            @JsonProperty final List<Wishlist> wishlists) {
+        @JsonProperty final String email,
+        @JsonProperty final String name,
+        @JsonProperty final String password,
+        @JsonProperty final List<Wishlist> wishlists
+    ) {
         this.email = email;
         this.name = name;
         this.password = hashPassword(password);
@@ -101,7 +101,7 @@ public class User implements ModelInterface<String> {
      */
     public Boolean checkPassword(final String comparePassword) {
         return hashPassword(comparePassword)
-                .equals(hashPassword(this.password));
+            .equals(hashPassword(this.password));
     }
 
     /**
@@ -121,8 +121,8 @@ public class User implements ModelInterface<String> {
      */
     public List<Long> getWishlistIds() {
         return this.wishlists.stream()
-                .map(wishlist -> wishlist.getId())
-                .toList();
+            .map(wishlist -> wishlist.getId())
+            .toList();
     }
 
     /**
@@ -147,5 +147,4 @@ public class User implements ModelInterface<String> {
         // Or we can find a better way to do auth
         return plainPassword;
     }
-
 }

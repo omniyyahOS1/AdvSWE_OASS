@@ -1,5 +1,10 @@
 package coms.w4156.moviewishlist.services;
 
+import coms.w4156.moviewishlist.models.WatchModeSearchResult;
+import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -7,19 +12,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * Service class to abstract away the logic related to getting information from
  * the WatchMode API.
  */
-@NoArgsConstructor @Getter @Setter
+@NoArgsConstructor
+@Getter
+@Setter
 @Service
 public class WatchModeService {
-
 
     /**
      * A test ID for the movie Skyfall.
@@ -30,7 +33,7 @@ public class WatchModeService {
      * The base endpoint for making queries about movie sources.
      */
     private final String watchModeSourceBaseEndpoint =
-            "https://api.watchmode.com/v1/title/";
+        "https://api.watchmode.com/v1/title/";
 
     /**
      * A test endpoint call to see what sources the movie Skyfall is available
@@ -39,7 +42,6 @@ public class WatchModeService {
 
     @Value("${apiKey}")
     private String apiKey;
-
 
     /**
      * The character set for making API queries.
@@ -54,24 +56,25 @@ public class WatchModeService {
      */
     private RestTemplate restTemplate = new RestTemplate();
 
-
     /**
      * A test response that fetches a hardcoded movie.
+     *
      * @return response from the api
      */
     public List<String> testResponse() {
-
-        ResponseEntity<Source[]> responseEntity = restTemplate
-                .getForEntity(getWatchmodeTestURL(), Source[].class);
+        ResponseEntity<Source[]> responseEntity = restTemplate.getForEntity(
+            getWatchmodeTestURL(),
+            Source[].class
+        );
 
         Source[] sources = responseEntity.getBody();
 
-        return Arrays.stream(sources)
-                .filter(Source::isFreeWithSubscription)
-                .map(Source::getName)
-                .collect(Collectors.toList());
+        return Arrays
+            .stream(sources)
+            .filter(Source::isFreeWithSubscription)
+            .map(Source::getName)
+            .collect(Collectors.toList());
     }
-
 
     /**
      * Function to return a list of sources that are free with subscription by
@@ -81,14 +84,14 @@ public class WatchModeService {
      * @return an array of Strings which are the source names
      */
     public List<String> getFreeWithSubSourcesById(final String watchModeID) {
-
         Source[] allSources = getSources(watchModeID);
 
-        return Arrays.stream(allSources)
-                .filter(Source::isFreeWithSubscription)
-                .map(Source::getName)
-                .distinct()
-                .collect(Collectors.toList());
+        return Arrays
+            .stream(allSources)
+            .filter(Source::isFreeWithSubscription)
+            .map(Source::getName)
+            .distinct()
+            .collect(Collectors.toList());
     }
 
     /**
@@ -99,14 +102,14 @@ public class WatchModeService {
      * @return an array of Strings which are the source names
      */
     public List<String> getRentSourcesById(final String watchModeID) {
-
         Source[] allSources = getSources(watchModeID);
 
-        return Arrays.stream(allSources)
-                .filter(Source::isRentSource)
-                .map(Source::getName)
-                .distinct()
-                .collect(Collectors.toList());
+        return Arrays
+            .stream(allSources)
+            .filter(Source::isRentSource)
+            .map(Source::getName)
+            .distinct()
+            .collect(Collectors.toList());
     }
 
     /**
@@ -117,14 +120,14 @@ public class WatchModeService {
      * @return an array of Strings which are the source names
      */
     public List<String> getBuySourcesById(final String watchModeID) {
-
         Source[] allSources = getSources(watchModeID);
 
-        return Arrays.stream(allSources)
-                .filter(Source::isBuySource)
-                .map(Source::getName)
-                .distinct()
-                .collect(Collectors.toList());
+        return Arrays
+            .stream(allSources)
+            .filter(Source::isBuySource)
+            .map(Source::getName)
+            .distinct()
+            .collect(Collectors.toList());
     }
 
     /**
@@ -138,24 +141,56 @@ public class WatchModeService {
     public Source[] getSources(final String watchModeID) {
         String url = makeURL(watchModeID);
 
-        return restTemplate
-            .getForEntity(url, Source[].class)
-            .getBody();
+        return restTemplate.getForEntity(url, Source[].class).getBody();
     }
 
     /**
      * Creates a url to query WatchMode given a WatchMode movie id.
+     *
      * @param watchModeID the id we want to query about its sources.
      * @return A url to query.
      */
     public String makeURL(final String watchModeID) {
-        return watchModeSourceBaseEndpoint + watchModeID
-                + "/sources/?apiKey=" + apiKey;
+        return (
+            watchModeSourceBaseEndpoint +
+            watchModeID +
+            "/sources/?apiKey=" +
+            apiKey
+        );
     }
 
-
+    /**
+     * This method simply returns the URL to test that WatchMode API
+     * is working correctly.
+     * @return the URL to test the API
+     */
     public String getWatchmodeTestURL() {
-        return "https://api.watchmode.com/v1/title/" + skyfallId
-                + "/sources/?apiKey=" + apiKey;
+        return (
+            "https://api.watchmode.com/v1/title/" +
+            skyfallId +
+            "/sources/?apiKey=" +
+            apiKey
+        );
+    }
+
+    /**
+     * method to search for movies and people by title.
+     * @param query the title of the movie or person
+     * @return a list of titles that match the search
+     */
+    public WatchModeSearchResult getResultsForSearchQuery(final String query) {
+        URI uri = UriComponentsBuilder
+            .fromHttpUrl("https://api.watchmode.com/v1/")
+            .path("/search")
+            .queryParam("apiKey", apiKey)
+            .queryParam("search_field", "name")
+            .queryParam("search_value", query)
+            .queryParam("types", "movie")
+            .build()
+            .toUri();
+
+        return restTemplate
+            .getForEntity(uri, WatchModeSearchResult.class)
+            .getBody();
     }
 }

@@ -1,25 +1,39 @@
 type Query {
-  users: [User]
-  userByEmail(email: String!): User
-  movies: [Movie]
+    # users
+    users: [User]
+    userByEmail(email: String!): User
+    # movies
+    movies: [Movie]
+
+    searchMoviesByTitle(title: String!): [MovieResult]
 }
 
 type User {
-  email: String!
-  name: String
-  password: String
-  wishlists: [Wishlist]
+    email: String!
+    name: String
+    password: String
+    wishlists: [Wishlist]
 }
 
 type Wishlist {
-  id: ID!
-  name: String
-  movies: [Movie]
+    id: ID!
+    name: String
+    movies: [Movie]
 }
 
 type Movie {
-  id: ID!
-  title: String
-  releaseYear: Int
-  wishlists: [Wishlist]
+    id: ID!
+    title: String
+    releaseYear: Int
+    wishlists: [Wishlist]
+}
+
+type MovieResult {
+    id: ID!
+    name: String
+    year: Int
+    type: String
+    imdb_id: String
+    tmdb_id: Int
+    tmdb_type: String
 }
