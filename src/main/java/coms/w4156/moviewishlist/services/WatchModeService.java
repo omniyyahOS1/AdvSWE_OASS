@@ -239,17 +239,23 @@ public class WatchModeService {
     /**
      * method to get details about a specific title.
      * @param id The id of the title
+     * @param includeSources whether or not to include sources
      * @return details about the title
      */
-    public TitleDetail getTitleDetail(final String id) {
-        URI uri = UriComponentsBuilder
+    public TitleDetail getTitleDetail(
+        final String id,
+        final Boolean includeSources
+    ) {
+        UriComponentsBuilder builder = UriComponentsBuilder
             .fromHttpUrl("https://api.watchmode.com/v1/")
             .pathSegment("title", id, "details")
-            .queryParam("apiKey", apiKey)
-            // This should be done conditionally based on the GraphQL Query
-            .queryParam("append_to_response", "sources")
-            .build()
-            .toUri();
+            .queryParam("apiKey", apiKey);
+
+        if (includeSources) {
+            builder = builder.queryParam("append_to_response", "sources");
+        }
+
+        var uri = builder.build().toUri();
 
         return restTemplate.getForEntity(uri, TitleDetail.class).getBody();
     }

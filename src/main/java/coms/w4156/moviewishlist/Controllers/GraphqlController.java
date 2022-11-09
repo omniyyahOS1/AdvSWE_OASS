@@ -9,6 +9,7 @@ import coms.w4156.moviewishlist.models.watchMode.WatchModeSource;
 import coms.w4156.moviewishlist.services.MovieService;
 import coms.w4156.moviewishlist.services.UserService;
 import coms.w4156.moviewishlist.services.WatchModeService;
+import graphql.schema.DataFetchingEnvironment;
 import java.util.Collection;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,11 +103,16 @@ public class GraphqlController {
      * Get title details by id.
      *
      * @param id - The id of the movie
+     * @param env - The DataFetchingEnvironment
      *
      * @return Details of the Title
      */
     @QueryMapping
-    public TitleDetail titleDetail(@Argument final String id) {
-        return watchModeService.getTitleDetail(id);
+    public TitleDetail titleDetail(
+        @Argument final String id,
+        final DataFetchingEnvironment env
+    ) {
+        Boolean includeSources = env.getSelectionSet().contains("sources");
+        return watchModeService.getTitleDetail(id, includeSources);
     }
 }
