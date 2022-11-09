@@ -1,8 +1,11 @@
 package coms.w4156.moviewishlist.controllers;
 
 import coms.w4156.moviewishlist.models.Movie;
-import coms.w4156.moviewishlist.models.TitleResult;
 import coms.w4156.moviewishlist.models.User;
+import coms.w4156.moviewishlist.models.watchMode.TitleDetail;
+import coms.w4156.moviewishlist.models.watchMode.TitleSearchResult;
+import coms.w4156.moviewishlist.models.watchMode.WatchModeNetwork;
+import coms.w4156.moviewishlist.models.watchMode.WatchModeSource;
 import coms.w4156.moviewishlist.services.MovieService;
 import coms.w4156.moviewishlist.services.UserService;
 import coms.w4156.moviewishlist.services.WatchModeService;
@@ -69,9 +72,41 @@ public class GraphqlController {
      * @return List of User objects
      */
     @QueryMapping
-    public Collection<TitleResult> searchMoviesByTitle(
+    public Collection<TitleSearchResult> searchTitles(
         @Argument final String title
     ) {
-        return watchModeService.getResultsForSearchQuery(title).title_results();
+        return watchModeService.getTitlesBySearch(title).results();
+    }
+
+    /**
+     * Get all WatchMode sources.
+     *
+     * @return List of User objects
+     */
+    @QueryMapping
+    public Collection<WatchModeSource> sources() {
+        return watchModeService.getAllSources();
+    }
+
+    /**
+     * Get all WatchMode networks.
+     *
+     * @return List of User objects
+     */
+    @QueryMapping
+    public Collection<WatchModeNetwork> networks() {
+        return watchModeService.getAllNetworks();
+    }
+
+    /**
+     * Get title details by id.
+     *
+     * @param id - The id of the movie
+     *
+     * @return Details of the Title
+     */
+    @QueryMapping
+    public TitleDetail titleDetail(@Argument final String id) {
+        return watchModeService.getTitleDetail(id);
     }
 }

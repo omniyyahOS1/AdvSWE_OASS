@@ -1,6 +1,9 @@
 package coms.w4156.moviewishlist.services;
 
-import coms.w4156.moviewishlist.models.WatchModeSearchResult;
+import coms.w4156.moviewishlist.models.watchMode.TitleDetail;
+import coms.w4156.moviewishlist.models.watchMode.TitleSearchResponse;
+import coms.w4156.moviewishlist.models.watchMode.WatchModeNetwork;
+import coms.w4156.moviewishlist.models.watchMode.WatchModeSource;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
@@ -174,23 +177,80 @@ public class WatchModeService {
     }
 
     /**
+     * Get all sources supported by the WatchMode API.
+     * @return a list of titles that match the search
+     */
+    public List<WatchModeSource> getAllSources() {
+        URI uri = UriComponentsBuilder
+            .fromHttpUrl("https://api.watchmode.com/v1/")
+            .pathSegment("sources")
+            .queryParam("apiKey", apiKey)
+            .queryParam("regions", "US")
+            .build()
+            .toUri();
+
+        WatchModeSource[] sources = restTemplate
+            .getForEntity(uri, WatchModeSource[].class)
+            .getBody();
+
+        return Arrays.asList(sources);
+    }
+
+    /**
      * method to search for movies and people by title.
+     * @return a list of titles that match the search
+     */
+    public List<WatchModeNetwork> getAllNetworks() {
+        URI uri = UriComponentsBuilder
+            .fromHttpUrl("https://api.watchmode.com/v1/")
+            .pathSegment("networks")
+            .queryParam("apiKey", apiKey)
+            .queryParam("regions", "US")
+            .build()
+            .toUri();
+
+        WatchModeNetwork[] sources = restTemplate
+            .getForEntity(uri, WatchModeNetwork[].class)
+            .getBody();
+
+        return Arrays.asList(sources);
+    }
+
+    /**
+     * method to autocomplete search for Titles by title.
      * @param query the title of the movie or person
      * @return a list of titles that match the search
      */
-    public WatchModeSearchResult getResultsForSearchQuery(final String query) {
+    public TitleSearchResponse getTitlesBySearch(final String query) {
         URI uri = UriComponentsBuilder
             .fromHttpUrl("https://api.watchmode.com/v1/")
-            .path("/search")
+            .pathSegment("autocomplete-search")
             .queryParam("apiKey", apiKey)
-            .queryParam("search_field", "name")
             .queryParam("search_value", query)
-            .queryParam("types", "movie")
+            .queryParam("search_type", 2)
             .build()
             .toUri();
 
         return restTemplate
-            .getForEntity(uri, WatchModeSearchResult.class)
+            .getForEntity(uri, TitleSearchResponse.class)
             .getBody();
+    }
+
+    /**
+     * method to get details about a specific title.
+     * @param id The id of the title
+     * @return details about the title
+     */
+    public TitleDetail getTitleDetail(final String id) {
+        URI uri = UriComponentsBuilder
+            .fromHttpUrl("https://api.watchmode.com/v1/")
+            .pathSegment("title", id, "details")
+            .queryParam("apiKey", apiKey)
+            // This should be done conditionally based on the GraphQL Query
+            .queryParam("append_to_response", "sources")
+            .build()
+            .toUri();
+
+        return restTemplate.getForEntity(uri, TitleDetail.class).getBody();
     }
 }
