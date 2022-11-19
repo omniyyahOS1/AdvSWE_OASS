@@ -21,7 +21,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Builder
-public class Client {
+public class Client implements ModelInterface<Long> {
 
     /**
      * ID of the movie.
