@@ -1,0 +1,47 @@
+type Mutation {
+    # Create a new Client for the API
+    createClient(email: String!): Client!
+
+    # Update a client's email
+    updateClient(id: ID!, email: String!): Client!
+
+    # Delete a client
+    deleteClient(id: ID!): Client!
+
+    # Create a new user
+    createUser(
+        # ID of the client that this user belongs to
+        clientID: ID!
+        # email of the user, to be used as unique identifier
+        email: String!
+        # password of the user
+        password: String!
+        # Display name of the user
+        name: String
+    ): User!
+
+    # Update a user
+    updateUser(email: String!, password: String, name: String): User!
+
+    # Delete a user
+    deleteUser(email: String!): User
+
+    # Create a new Wishlist
+    createWishlist(
+        # Email ID of the user that this wishlist belongs to
+        userEmail: ID!
+        # Name of the wishlist
+        wishlistName: String!
+    ): Wishlist!
+
+    # Update a wishlist
+    updateWishlist(
+        # ID of the wishlist to be updated
+        id: ID!
+        # Name of the wishlist
+        name: String
+    ): Wishlist
+
+    # Delete a wishlist
+    deleteWishlist(id: ID!): Wishlist
+}

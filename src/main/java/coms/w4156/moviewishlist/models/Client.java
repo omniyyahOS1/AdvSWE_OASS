@@ -8,7 +8,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +18,13 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "clients")
+@Table(
+    name = "clients",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = "id"),
+        @UniqueConstraint(columnNames = "email")
+    }
+)
 @ToString
 @NoArgsConstructor
 @EqualsAndHashCode
@@ -61,5 +69,17 @@ public class Client implements ModelInterface<Long> {
 
     public Client(final String email) {
         this.email = email;
+    }
+
+    /**
+     * Get list of users under this client.
+     *
+     * @return List of users under this client
+     */
+    public List<User> getUsers() {
+        if (users == null) {
+            return List.of();
+        }
+        return users;
     }
 }
