@@ -2,7 +2,6 @@ package coms.w4156.moviewishlist.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
-import java.util.Optional;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -51,7 +50,7 @@ public class User implements ModelInterface<String> {
      * The list of wishlists owned by this user.
      */
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @Getter
+    @Setter
     private List<Wishlist> wishlists;
 
     @ManyToOne

@@ -193,6 +193,26 @@ public class GraphqlController {
     }
 
     /**
+     * Get title details for a movie.
+     *
+     * @param movie - The local movie object
+     * @param env - The DataFetchingEnvironment
+     *
+     * @return Details of the Title
+     */
+    @SchemaMapping(typeName = "Movie", field = "details")
+    public TitleDetail getMovieDetails(
+        final Movie movie,
+        final DataFetchingEnvironment env
+    ) {
+        Boolean includeSources = env.getSelectionSet().contains("sources");
+        return watchModeService.getTitleDetail(
+            movie.getId().toString(),
+            includeSources
+        );
+    }
+
+    /**
      * Get title details by id.
      *
      * @param titledetail - The TitleDetail object

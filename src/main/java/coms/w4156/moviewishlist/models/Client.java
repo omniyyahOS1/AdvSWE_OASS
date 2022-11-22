@@ -10,7 +10,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import lombok.Builder;
-import lombok.Builder.Default;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -51,7 +50,6 @@ public class Client implements ModelInterface<Long> {
      * The list of profiles serviced by this client.
      */
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
-    @Getter
     @Setter
     private List<Profile> profiles;
 
