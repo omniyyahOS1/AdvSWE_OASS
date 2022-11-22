@@ -1,6 +1,7 @@
 package coms.w4156.moviewishlist.controllers;
 
 import coms.w4156.moviewishlist.models.Client;
+import coms.w4156.moviewishlist.models.Movie;
 import coms.w4156.moviewishlist.models.User;
 import coms.w4156.moviewishlist.models.Wishlist;
 import coms.w4156.moviewishlist.services.ClientService;
@@ -8,7 +9,10 @@ import coms.w4156.moviewishlist.services.MovieService;
 import coms.w4156.moviewishlist.services.UserService;
 import coms.w4156.moviewishlist.services.WatchModeService;
 import coms.w4156.moviewishlist.services.WishlistService;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -193,5 +197,47 @@ public class MutationController {
     @MutationMapping
     public Optional<Wishlist> deleteWishlist(@Argument final String id) {
         return wishlistService.deleteById(Long.parseLong(id));
+    }
+
+    /**
+     * Create a new movie with the given title.
+     *
+     * @param wishlistID - ID of the wishlist to create the movie for
+     * @param movieID - ID of the movie
+     * @return the new movie
+     */
+    @MutationMapping
+    public Movie addMovieToWishlist(
+        @Argument final String wishlistID,
+        @Argument final String movieID
+    ) {
+        var wishlist = wishlistService
+            .findById(Long.parseLong(wishlistID))
+            .get();
+
+        return movieService
+            .findById(Long.parseLong(movieID))
+            .map(m -> {
+                Long matchingWishlists = m
+                    .getWishlists()
+                    .stream()
+                    .filter(w -> w.getId().equals(wishlist.getId()))
+                    .count();
+
+                if (matchingWishlists == 0) {
+                    m.getWishlists().add(wishlist);
+                    return movieService.update(m);
+                }
+                return m;
+            })
+            .orElseGet(() ->
+                movieService.create(
+                    Movie
+                        .builder()
+                        .id(Long.parseLong(movieID))
+                        .wishlists(List.of(wishlist))
+                        .build()
+                )
+            );
     }
 }

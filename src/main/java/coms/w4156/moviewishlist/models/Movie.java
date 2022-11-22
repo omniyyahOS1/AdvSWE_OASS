@@ -43,6 +43,7 @@ public class Movie implements ModelInterface<Long> {
      * The wishlists that contain this movie.
      */
     @ManyToMany(mappedBy = "movies")
+    @Getter
     @Setter
     @Builder.Default
     private List<Wishlist> wishlists = new ArrayList<>();
@@ -59,5 +60,20 @@ public class Movie implements ModelInterface<Long> {
     ) {
         this.id = id;
         this.wishlists = wishlists;
+        if (this.wishlists == null) {
+            this.wishlists = List.of();
+        }
+    }
+
+    /**
+     * Get wishlists that this movie belongs to.
+     *
+     * @return List of wishlists
+     */
+    public List<Wishlist> getWishlists() {
+        if (this.wishlists == null) {
+            return List.of();
+        }
+        return wishlists;
     }
 }

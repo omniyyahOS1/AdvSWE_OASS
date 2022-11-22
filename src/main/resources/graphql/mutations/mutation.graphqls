@@ -44,4 +44,12 @@ type Mutation {
 
     # Delete a wishlist
     deleteWishlist(id: ID!): Wishlist
+
+    # Add a movie by ID to a wishlist
+    addMovieToWishlist(
+        # ID of the wishlist that this movie belongs to
+        wishlistID: ID!
+        # ID of a movie found within the movie Search
+        movieID: ID!
+    ): Movie!
 }
