@@ -41,6 +41,7 @@ public class Movie implements ModelInterface<Long> {
      * The wishlists that contain this movie.
      */
     @ManyToMany(mappedBy = "movies")
+    @Getter
     @Setter
     @Builder.Default
     private List<Wishlist> wishlists = new ArrayList<>();
