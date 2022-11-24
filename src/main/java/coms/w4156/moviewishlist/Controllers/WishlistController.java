@@ -1,9 +1,12 @@
 package coms.w4156.moviewishlist.controllers;
 
+import coms.w4156.moviewishlist.models.Profile;
+import coms.w4156.moviewishlist.models.Wishlist;
+import coms.w4156.moviewishlist.services.ProfileService;
+import coms.w4156.moviewishlist.services.WishlistService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +18,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import coms.w4156.moviewishlist.models.User;
-import coms.w4156.moviewishlist.models.Wishlist;
-import coms.w4156.moviewishlist.services.UserService;
-import coms.w4156.moviewishlist.services.WishlistService;
 
 @RequestMapping(value = "/wishlists")
 @RestController
@@ -34,10 +32,10 @@ public class WishlistController {
 
     /**
      * Use dependency injection to inject an object of the
-     * UserService class.
+     * ProfileService class.
      */
     @Autowired
-    private UserService userService;
+    private ProfileService profileService;
 
     /**
      * `/wishlists` will fetch a list of all wishlists in the database.
@@ -59,7 +57,8 @@ public class WishlistController {
     public ResponseEntity<Wishlist> getWishlistById(
         @PathVariable final long id
     ) {
-        return wlService.findById(id)
+        return wlService
+            .findById(id)
             .map(wishlist -> new ResponseEntity<>(wishlist, HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
@@ -75,7 +74,7 @@ public class WishlistController {
         @RequestBody final Wishlist wishlist
     ) {
         if (wishlist.getName().isEmpty()
-            || wishlist.getUserId().isEmpty()
+            || wishlist.getProfileId() == null
             || wishlist.getMovieIds() == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -96,20 +95,21 @@ public class WishlistController {
         @PathVariable final long id,
         @RequestBody final Wishlist wl
     ) {
-        return wlService.findById(id)
+        return wlService
+            .findById(id)
             .map(wishlist -> {
                 String name = wl.getName();
-                String userID = wl.getUserId();
-                Optional<User> user = userService.findById(userID);
+                Long profileID = wl.getProfileId();
+                Optional<Profile> profile = profileService.findById(profileID);
                 if (name != null) {
                     wishlist.setName(name);
                 }
-                if (user.isPresent()) {
-                    wishlist.setUser(user.get());
+                if (profile.isPresent()) {
+                    wishlist.setProfile(profile.get());
                 }
                 return new ResponseEntity<>(
-                        wlService.update(wishlist),
-                        HttpStatus.OK
+                    wlService.update(wishlist),
+                    HttpStatus.OK
                 );
             })
             .orElse(new ResponseEntity<>(HttpStatus.NO_CONTENT));
@@ -134,9 +134,9 @@ public class WishlistController {
     public ResponseEntity<Wishlist> deleteWishlist(
         @PathVariable final Long id
     ) {
-        return wlService.deleteById(id)
+        return wlService
+            .deleteById(id)
             .map(wishlist -> new ResponseEntity<>(wishlist, HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
-
 }

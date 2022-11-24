@@ -26,6 +26,63 @@ CREATE DATABASE testdb
 
 ### Step 3: Adding environment variables
 
+### For VS Code
+
+This is the simplest way to set environment variables on your local machine that work for both Windows and Mac
+as long as you're using [Visual Studio Code](https://code.visualstudio.com)
+
+Open the "Run and Debug" sidebar. (It's the Play Icon with a Bug on it.)
+
+You should see a big "Run and Debug" button with the following text below:
+
+> To customize Run and Debug **create a launch.json file**.
+
+Click that "create a launch.json file" link. It'll create a new JSON file which will be used to run the Java project from within
+VS Code.
+
+The JSON file should look like this:
+
+```json
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Launch Current File",
+      "request": "launch",
+      "mainClass": "${file}",
+      "env": {
+        "DB_USER_NAME": "postgres",
+        "DATABASE_URL": "jdbc:postgresql://localhost:5432/testdb",
+        "API_KEY": "<your_api_key_here>"
+      }
+    },
+    {
+      "type": "java",
+      "name": "Launch MovieWishlistApplication",
+      "request": "launch",
+      "mainClass": "coms.w4156.moviewishlist.MovieWishlistApplication",
+      "projectName": "MovieWishlist",
+      "env": {
+        "DB_USER_NAME": "postgres",
+        "DATABASE_URL": "jdbc:postgresql://localhost:5432/testdb",
+        "API_KEY": "<your_api_key_here>"
+      }
+    }
+  ]
+}
+```
+
+If you have any problem creating this file, you can create the file manually at `./vscode/launch.json` at the root of the project folder.
+
+Once this is done, you can use the "Run and Debug" section to choose between the two commands and click the Play button.
+It will automatically use the environment variables you defined.
+
+If this technique doesn't work, or if you prefer to run commands from the terminal, you can use the instructions below
+
 ### For mac:
 
 1. Open a terminal and open the .bash_profile file by running:
@@ -75,7 +132,7 @@ I (Sachin) can dm you mine on Slack or you can sign up for one here https://api.
 
 ### Step 2: Connect API key to the API
 
-In order for the API to make queries to WatchMode based off of your API key, you need to add the 'apikey' as a system environment variable in the same way you added the postgres database url, username and password. It is set up like this so we never have to push API keys to the git repo
+In order for the API to make queries to WatchMode based off of your API key, you need to add the 'API_KEY' as a system environment variable in the same way you added the postgres database url, username and password. It is set up like this so we never have to push API keys to the git repo
 
 ### Step 3: Launch the API
 
@@ -126,7 +183,7 @@ Documentation for all the endpoints can be found in the `Documentation` folder
 
 ## SonarQube - Locally
 
-In order to run SonarQube locally, you need to install SonarQube locally. 
+In order to run SonarQube locally, you need to install SonarQube locally.
 Follow the instructions in the link below. There are two options, to install
 from a zip or from a Docker image. On Windows, I found it easier to use the
 Docker image as the zip file gave me some issues.
@@ -154,10 +211,15 @@ Jacoco configuration.
 
 ## JaCoCo
 SonarQube is very verbose, if all you are interested in is code coverage, then
-JaCoCo should suffice. Run 
+JaCoCo should suffice. Run
 ```shell
 mvn clean verify
 ```
 
 and then open `target/site/jacoco/index.html` in a browser to view coverage
 reports.
+
+## Authentication
+The authentication is handled using JSON Web Tokens; here is how it works:
+- a client needs to hit the `/new-client/` endpoint with his email to be added to the database; he will receive his own JWT in the response
+- on every subsequent request, the client has to add the `Authorization: Bearer <JWT>` header so that he can be authenticated. If he fails to do so or the JWT is not valid, he will receive a `403` error
