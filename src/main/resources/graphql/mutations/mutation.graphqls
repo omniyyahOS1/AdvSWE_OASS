@@ -8,28 +8,24 @@ type Mutation {
     # Delete a client
     deleteClient(id: ID!): Client!
 
-    # Create a new user
-    createUser(
-        # ID of the client that this user belongs to
+    # Create a new profile
+    createProfile(
+        # ID of the client that this profile belongs to
         clientID: ID!
-        # email of the user, to be used as unique identifier
-        email: String!
-        # password of the user
-        password: String!
-        # Display name of the user
+        # Display name of the profile
         name: String
-    ): User!
+    ): Profile!
 
-    # Update a user
-    updateUser(email: String!, password: String, name: String): User!
+    # Update a profile
+    updateProfile(id: ID!, name: String!): Profile
 
-    # Delete a user
-    deleteUser(email: String!): User
+    # Delete a profile
+    deleteProfile(id: ID!): Profile
 
     # Create a new Wishlist
     createWishlist(
-        # Email ID of the user that this wishlist belongs to
-        userEmail: ID!
+        # ID of the profile that this wishlist belongs to
+        profileID: ID!
         # Name of the wishlist
         wishlistName: String!
     ): Wishlist!

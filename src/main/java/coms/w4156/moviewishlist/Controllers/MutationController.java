@@ -2,12 +2,11 @@ package coms.w4156.moviewishlist.controllers;
 
 import coms.w4156.moviewishlist.models.Client;
 import coms.w4156.moviewishlist.models.Movie;
-import coms.w4156.moviewishlist.models.User;
+import coms.w4156.moviewishlist.models.Profile;
 import coms.w4156.moviewishlist.models.Wishlist;
 import coms.w4156.moviewishlist.services.ClientService;
 import coms.w4156.moviewishlist.services.MovieService;
-import coms.w4156.moviewishlist.services.UserService;
-import coms.w4156.moviewishlist.services.WatchModeService;
+import coms.w4156.moviewishlist.services.ProfileService;
 import coms.w4156.moviewishlist.services.WishlistService;
 import java.util.List;
 import java.util.Optional;
@@ -20,22 +19,19 @@ import org.springframework.stereotype.Controller;
 public class MutationController {
 
     /**
-     * Use dependency injection to inject an object of the UserService class.
+     * Use dependency injection to inject various services.
      */
     @Autowired
     private ClientService clientService;
 
     @Autowired
-    private UserService userService;
+    private ProfileService profileService;
 
     @Autowired
     private WishlistService wishlistService;
 
     @Autowired
     private MovieService movieService;
-
-    @Autowired
-    private WatchModeService watchModeService;
 
     /**
      * Create a new client with the given email ID.
@@ -83,85 +79,74 @@ public class MutationController {
     }
 
     /**
-     * Create a new user with the given email ID.
+     * Create a new profile with the given name.
      *
-     * @param clientID - ID of the client to create the user for
-     * @param email - Email ID of the user
-     * @param password - password of the user
-     * @param name - Name of the user
-     * @return the new user
+     * @param clientID - ID of the client to create the profile for
+     * @param name - Name of the profile
+     * @return the new profile
      */
     @MutationMapping
-    public User createUser(
+    public Profile createProfile(
         @Argument final String clientID,
-        @Argument final String email,
-        @Argument final String password,
         @Argument final String name
     ) {
         Client client = clientService.findById(Long.parseLong(clientID)).get();
-        User user = new User();
-        user.setEmail(email);
-        user.setPassword(password);
-        user.setName(name);
-        user.setClient(client);
-        return userService.create(user);
+        Profile profile = new Profile();
+        profile.setName(name);
+        profile.setClient(client);
+        return profileService.create(profile);
     }
 
     /**
-     * Update a user with the given ID.
+     * Update a profile with the given ID.
      *
-     * @param email - email of the user to update
-     * @param password - New password of the user
-     * @param name - New name of the user
-     * @return the updated user
+     * @param id - id of the profile to update
+     * @param name - New name of the profile
+     * @return the updated profile
      */
     @MutationMapping
-    public Optional<User> updateUser(
-        @Argument final String email,
-        @Argument final Optional<String> password,
-        @Argument final Optional<String> name
+    public Optional<Profile> updateProfile(
+        @Argument final String id,
+        @Argument final String name
     ) {
-        return userService
-            .findById(email)
-            .map(u -> {
-                if (password.isPresent()) {
-                    u.setPassword(password.get());
-                }
-                if (name.isPresent()) {
-                    u.setName(name.get());
-                }
-                return userService.update(u);
+        return profileService
+            .findById(Long.parseLong(id))
+            .map(profile -> {
+                profile.setName(name);
+                return profileService.update(profile);
             });
     }
 
     /**
-     * Delete a user by email.
+     * Delete a profile by email.
      *
-     * @param email - Email of the user to delete
-     * @return the deleted user
+     * @param id - id of the profile to delete
+     * @return the deleted profile
      */
     @MutationMapping
-    public Optional<User> deleteUser(@Argument final String email) {
-        return userService.deleteById(email);
+    public Optional<Profile> deleteProfile(@Argument final String id) {
+        return profileService.deleteById(Long.parseLong(id));
     }
 
     /**
-     * Create a new Wishlist for a user.
+     * Create a new Wishlist for a profile.
      *
-     * @param userEmail - Email of the user to create the wishlist for
+     * @param profileID - Email of the profile to create the wishlist for
      * @param wishlistName - Name of the wishlist
      * @return the new wishlist
      */
     @MutationMapping
     public Wishlist createWishlist(
-        @Argument final String userEmail,
+        @Argument final String profileID,
         @Argument final String wishlistName
     ) {
         return wishlistService.create(
             Wishlist
                 .builder()
                 .name(wishlistName)
-                .user(userService.findById(userEmail).get())
+                .profile(
+                    profileService.findById(Long.parseLong(profileID)).get()
+                )
                 .build()
         );
     }

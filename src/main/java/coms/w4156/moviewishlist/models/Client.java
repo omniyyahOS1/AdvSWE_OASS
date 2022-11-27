@@ -59,25 +59,33 @@ public class Client implements ModelInterface<Long> {
      * @param email - email of the client
      * @param profiles - The list of profiles serviced by this client
      */
-    public Client(final Long id, final String email, final List<Profile> profiles) {
+    public Client(
+        final Long id,
+        final String email,
+        final List<Profile> profiles
+    ) {
         this.id = id;
         this.email = email;
         this.profiles = profiles;
     }
 
+    /**
+     * Create a new Client object with a given email.
+     * @param email
+     */
     public Client(final String email) {
         this.email = email;
     }
 
     /**
-     * Get list of users under this client.
+     * Get list of profiles under this client.
      *
-     * @return List of users under this client
+     * @return List of profiles under this client
      */
-    public List<User> getUsers() {
-        if (users == null) {
+    public List<Profile> getProfiles() {
+        if (profiles == null) {
             return List.of();
         }
-        return users;
+        return profiles;
     }
 }

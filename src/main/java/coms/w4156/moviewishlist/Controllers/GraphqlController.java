@@ -72,15 +72,14 @@ public class GraphqlController {
     }
 
     /**
-     * Fetch a profile by name.
+     * Fetch a profile by ID.
      *
-     * @param name - The name of the profile
-     *
+     * @param id - The id of the profile
      * @return List of Profile objects
      */
     @QueryMapping
-    public Optional<Profile> profileByName(@Argument final String name) {
-        return profileService.findByName(name);
+    public Optional<Profile> profileByUD(@Argument final String id) {
+        return profileService.findById(Long.parseLong(id));
     }
 
     /**
@@ -154,16 +153,6 @@ public class GraphqlController {
         detail.setPoster(searchResult.getImageUrl());
         return detail;
     }
-
-    // /**
-    //  * Get all WatchMode sources.
-    //  *
-    //  * @return List of Profile objects
-    //  */
-    // @QueryMapping
-    // public Collection<WatchModeSource> sources() {
-    //     return watchModeService.getAllSources();
-    // }
 
     /**
      * Get all WatchMode networks.
