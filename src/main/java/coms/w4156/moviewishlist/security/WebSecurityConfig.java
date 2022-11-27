@@ -1,8 +1,11 @@
 package coms.w4156.moviewishlist.security;
 
+import coms.w4156.moviewishlist.security.jwt.JwtRequestFilter;
+import coms.w4156.moviewishlist.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,10 +15,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.authentication.AuthenticationManager;
-
-import coms.w4156.moviewishlist.security.jwt.JwtRequestFilter;
-import coms.w4156.moviewishlist.services.ClientService;
 
 @Configuration
 @EnableWebSecurity
@@ -29,8 +28,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     ClientService clientService;
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(clientService).passwordEncoder(passwordEncoder());
+    protected void configure(AuthenticationManagerBuilder auth)
+        throws Exception {
+        auth
+            .userDetailsService(clientService)
+            .passwordEncoder(passwordEncoder());
     }
 
     @Bean
@@ -46,12 +48,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/**/new-client").permitAll()
-                .anyRequest().authenticated().and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        http
+            .csrf()
+            .disable()
+            .authorizeRequests()
+            .antMatchers("/**/new-client")
+            .permitAll()
+            .antMatchers("/**/graphiql")
+            .permitAll()
+            .antMatchers("/**/subscriptions")
+            .permitAll()
+            .antMatchers("/vendor/**")
+            .permitAll()
+            .antMatchers("/**/graphql")
+            .permitAll()
+            .anyRequest()
+            .authenticated()
+            .and()
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.addFilterBefore(
+            jwtFilter,
+            UsernamePasswordAuthenticationFilter.class
+        );
     }
 }
