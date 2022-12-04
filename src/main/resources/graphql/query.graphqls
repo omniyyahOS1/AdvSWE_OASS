@@ -1,0 +1,58 @@
+# The root query mechanism. Use this for all data fetching
+type Query {
+    # Get all profiles
+    profiles: [Profile]
+
+    # get a particular profile by id
+    profileByID(id: ID!): Profile
+
+    # get all clients
+    clients: [Client]
+
+    # get a particular client by id
+    clientById(id: ID!): Client
+
+    # get all movies in the database
+    movies: [Movie]
+
+    # filter all movies by genre in a specific wishlist
+    moviesByGenre(wishlistID: ID!, genre: String): [Movie]
+
+    # filter all movies by release date in a specific wishlist
+    moviesByReleaseYear(wishlistID: ID!, movieReleaseYear: String): [Movie]
+
+    # filter all movies by run time in a specific wishlist
+    moviesByRuntime(wishlistID: ID!, runtime: Int): [Movie]
+
+    # filter all movies by critic score in a specific wishlist
+    moviesByCriticScore(wishlistID: ID!, criticScore: Int): [Movie]
+
+    # filter all movies by rating in a specific wishlist
+    #movieByRating(wishlistID: ID!, rating: Int): [Movie]
+
+    # watch mode API
+    networks: [WatchModeNetwork]
+
+    # Serach for Movies and TV Shows by title
+    # Returns a list of results sorted by relevance
+    searchTitles(title: String!): [TitleSearchResult]
+
+    # Get details about a movie by ID
+    # This includes the sources where this title is available
+    titleDetail(id: ID!): TitleDetail
+
+    # user ratings api
+    ratings : [Ratings]
+
+    # get user rating by id
+    ratingsById(id:ID!) : Ratings
+
+    # get ratings done by a specific profile
+    ratingsByProfile(profileId : String!) : [Ratings]
+
+    # get ratings for a specific movie
+    ratingsByMovie(movieId : String!) : [Ratings]
+
+    # get wishlists
+    wishlists : [Wishlist]
+}
