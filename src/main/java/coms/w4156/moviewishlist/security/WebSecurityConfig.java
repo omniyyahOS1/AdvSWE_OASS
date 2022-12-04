@@ -10,66 +10,69 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig {
 
     @Autowired
-    JwtRequestFilter jwtFilter;
+    private JwtRequestFilter jwtFilter;
 
-    @Autowired
-    ClientService clientService;
+    // @Autowired
+    // private ClientService clientService;
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth)
+    // protected final void configure(final AuthenticationManagerBuilder auth)
+    //     throws Exception {
+    //     auth
+    //         .userDetailsService(clientService)
+    //         .passwordEncoder(passwordEncoder());
+    // }
+
+    /**
+     * Configure the security of the application.
+     */
+    // @Bean
+    // public AuthenticationManager authenticationManagerBean() throws Exception {
+    //     return super.authenticationManagerBean();
+    // }
+
+    /**
+     * Configure the password encoder of the application.
+     * @return - The password encoder
+     */
+    // @Bean
+    // public PasswordEncoder passwordEncoder() {
+    //     return new BCryptPasswordEncoder();
+    // }
+
+    /**
+     * Configure the security of the application.
+     * @param http - The http security to configure
+     * @throws Exception - If there is an error configuring the security
+     * @return - The security filter chain
+     */
+    @Bean
+    public SecurityFilterChain configure(final HttpSecurity http)
         throws Exception {
-        auth
-            .userDetailsService(clientService)
-            .passwordEncoder(passwordEncoder());
-    }
-
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-            .csrf()
-            .disable()
-            .authorizeRequests()
-            .antMatchers("/**/new-client")
-            .permitAll()
-            .antMatchers("/**/graphiql")
-            .permitAll()
-            .antMatchers("/**/subscriptions")
-            .permitAll()
-            .antMatchers("/vendor/**")
-            .permitAll()
-            .antMatchers("/**/graphql")
-            .permitAll()
-            .anyRequest()
-            .authenticated()
-            .and()
-            .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilterBefore(
             jwtFilter,
             UsernamePasswordAuthenticationFilter.class
         );
+
+        return http
+            .csrf(x -> x.disable())
+            .authorizeRequests(auth -> {
+                auth.anyRequest().permitAll();
+            })
+            .sessionManagement(x ->
+                x.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+            .build();
     }
 }

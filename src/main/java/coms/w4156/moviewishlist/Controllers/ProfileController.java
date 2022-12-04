@@ -37,31 +37,40 @@ public class ProfileController {
     }
 
     /**
-     * Get a particular profile by ID. If not found HTTP 204: NO Content response.
+     * Get a particular profile by ID. If not found HTTP 204:
+     * NO Content response.
      *
      * @param id - The email address of the profile
      * @return A single Profile object
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Profile> getProfileById(@PathVariable long id) {
-        return profileService.findById(id)
+    public ResponseEntity<Profile> getProfileById(@PathVariable final long id) {
+        return profileService
+            .findById(id)
             .map(profile -> new ResponseEntity<>(profile, HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
     /**
-     * POST `/profiles` will create a new profile. The fields for the profile object
+     * POST `/profiles` will create a new profile.
+     *
+     * The fields for the profile object.
      * must be passed in as the RequestBody as json.path.
      *
      * @param profile - Profile object to add to the database.
      * @return The profile object that was just created
      */
     @PostMapping
-    public ResponseEntity<Profile> createProfile(@RequestBody final Profile profile) {
-        if  (profile.getName().isEmpty()) {
+    public ResponseEntity<Profile> createProfile(
+        @RequestBody final Profile profile
+    ) {
+        if (profile.getName().isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(profileService.create(profile), HttpStatus.OK);
+        return new ResponseEntity<>(
+            profileService.create(profile),
+            HttpStatus.OK
+        );
     }
 
     /**
@@ -106,8 +115,9 @@ public class ProfileController {
      * @return the profile that was just deleted
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Profile> deleteWishlist(@PathVariable long id) {
-        return profileService.deleteById(id)
+    public ResponseEntity<Profile> deleteWishlist(@PathVariable final long id) {
+        return profileService
+            .deleteById(id)
             .map(profile -> new ResponseEntity<>(profile, HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
