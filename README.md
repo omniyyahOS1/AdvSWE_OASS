@@ -181,10 +181,7 @@ Here are the results of the latest test run:
 Documentation for many of our endpoints can be found in the Documentation folder
 
 All the documentation for the GraphQL endpoint can be found at the `/graphiql`
-endpoint
-
-After you have completed all these steps, you should be able to access the GraphiQL IDE
-through the /graphiql endpoint. The documentation for this endpoint is visible in the `Docs` pane which
+endpoint. The documentation is visible in the `Docs` pane which
 can be opened by clicking on the button in the top right. See the screenshot below.
 
 
