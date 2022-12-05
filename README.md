@@ -162,7 +162,7 @@ The generated reports will the appear under `target/site/project-reports.html`.
 
 Here are the results of the latest checkstyle run:
 
-![**SUCCESS**](/Documentation/checkstyle-result-screenshots/latest.png)
+![**SUCCESS**](/Documentation/checkstyle-result-screenshots/latest2.png)
 
 ## Running Tests
 
@@ -174,26 +174,14 @@ mvn test
 
 Here are the results of the latest test run:
 
-![**SUCCESS**: 14 Tests. 0 Failures. 0 Skipped](/Documentation/Test-Result-Screenshots/latest.png)
+![**SUCCESS**: 64 Tests. 0 Failures. 0 Skipped](/Documentation/Test-Result-Screenshots/latest.png)
 
 ## Documentation
 
 Documentation for many of our endpoints can be found in the Documentation folder
 
-All the documentation for the GraphQL endpoint can be found in the GraphiQL IDE.
-
-In order to access this IDE, you need to do a few things.
-
-1. Spin up a local instance of our service
-2. Authenticate by following the instructions in the Authentication portion of this README. Hold on to the token
-3. Download the ModHeader extension for Google Chrome
-4. Hit the /graphiql endpoint. At this point it should NOT work
-5. Use the ModHeader plugin to add a `Request Header` with name = `Authorization` and value = `Bearer <JWT>`
-   - Where JWT is your token that you saved from before. Note the space after "Bearer"
-
-The header should look like this:
-
-![ModHeader](/Documentation/documentation-screenshots/modHeader.png)
+All the documentation for the GraphQL endpoint can be found at the `/graphiql`
+endpoint
 
 After you have completed all these steps, you should be able to access the GraphiQL IDE
 through the /graphiql endpoint. The documentation for this endpoint is visible in the `Docs` pane which
