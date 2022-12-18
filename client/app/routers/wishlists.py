@@ -12,6 +12,29 @@ router = APIRouter(
     tags=[WISHLIST_TAG]
 )
 
+@router.get("/getall")
+async def create_wishlist():
+    """
+    Returns all the wishlists associated with the current client
+    """
+
+    mutation = """
+    query {
+        wishlists {
+            id
+            name
+            movies {
+                id
+                title
+            }
+        }
+    }
+    """
+
+    json_data = query_graphql_service(query=mutation)
+
+    return {"Result" : json_data}
+
 @router.get("/create")
 async def create_wishlist(profileID : int, wishlistName : str = "MyWatchlist"):
     """
@@ -69,26 +92,28 @@ async def update_wishlist(wishlistID : int, newName : str = "MyWatchlist2.0"):
 
     return {"Result" : json_data}
 
-# @router.get("/add-movie")
-# async def add_movie_to_wishlist(wishlistID : int):
-#     """
-#     Adds a movie
+@router.get("/add-movie")
+async def add_movie_to_wishlist(wishlistID : int, movidId : int = 1616666):
+    """
+    Adds a movie
 
-#     **wishlistID** the id of the wishlist we want to delete
-#     """
+    **wishlistID** the id of the wishlist we want to delete
+    """
 
-#     mutation = """mutation ($var_id : ID!) {
-#         deleteWishlist (id : $var_id) {
-#             name
-#         }
-#     }
-#     """
+    mutation = """
+    mutation ($wish_id : ID!, $movie_id : ID!) {
+        addMovieToWishlist(wishlistID : $wish_id, movieID : $movie_id) {
+            id
+            title
+        }
+    }
+    """
 
-#     variables = {"var_id" : wishlistID}
+    variables = {"wish_id" : wishlistID, "movie_id" : movidId}
 
-#     json_data = query_graphql_service(query=mutation, variables=variables)
+    json_data = query_graphql_service(query=mutation, variables=variables)
 
-#     return {"Result" : json_data}
+    return {"Result" : json_data}
 
 @router.get("/delete")
 async def delete_wishlist(wishlistID : int):
