@@ -1,7 +1,7 @@
 import os
 import tempfile
+from app.constants import URL
 
-URL = "http://localhost:8080"
 
 TEST_URL = URL + "/test/"
 SIGNUP_URL = URL+"/new-client/"

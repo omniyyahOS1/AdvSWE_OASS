@@ -1,5 +1,6 @@
-URL = "http://localhost:8080"
-GRAPHQL_URL = URL + "/graphql/"
+# URL = "http://localhost:8080"
+URL = "https://movie-wishlist-ase.herokuapp.com"
+GRAPHQL_URL = URL + "/graphql"
 
 
 TEST_URL = URL + "/test/"
