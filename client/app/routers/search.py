@@ -103,3 +103,33 @@ async def search_movie_by_title_verbose(title: str = DEFAULT_TITLE):
     json_data = query_graphql_service(query, variables)
 
     return {"Search Results": json_data}
+
+
+@router.get("/sources")
+async def search_movie_sources(title: str = DEFAULT_TITLE):
+    """
+    Searches for a movie by title and returns the sources one can
+    stream the movie on.
+    """
+    query = """
+    query ($title_var : String!) {
+        searchTitles(title : $title_var) {
+            id
+            name
+            details {
+                sources {
+                    name
+                    type
+                    price
+                    format
+                }
+            }
+        }
+    }
+    """
+
+    variables = {"title_var": title}
+
+    json_data = query_graphql_service(query, variables)
+
+    return {"Search Results": json_data}
