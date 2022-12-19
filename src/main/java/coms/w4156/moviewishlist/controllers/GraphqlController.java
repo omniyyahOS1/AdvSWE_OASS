@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 
@@ -78,8 +79,10 @@ public class GraphqlController {
             return new ArrayList<Profile>();
         }
 
-        Collection<Profile> profiles2 =  profileService.getAllForClient(client.get().getId());
-        return profiles2;
+        Collection<Profile> profiles = profileService.getAllForClient(
+            client.get().getId()
+        );
+        return profiles;
     }
 
     /**
@@ -97,7 +100,7 @@ public class GraphqlController {
         String clientEmail = authentication.getName();
         Optional<Client> client = clientService.findByEmail(clientEmail);
         if (!client.isPresent()) {
-            return null;
+            return Optional.empty();
         }
 
         Optional<Profile> profile = profileService.findById(Long.parseLong(id));
@@ -105,40 +108,40 @@ public class GraphqlController {
             !profile.isPresent() ||
             profile.get().getClientId() != client.get().getId()
         ) {
-            return null;
+            return Optional.empty();
         }
 
         return profile;
     }
 
-    /**
-     * Fetch a profile by name.
-     *
-     * @param name - The name of the profile
-     * @param authentication - The authentication object
-     * @return The Profile object
-     */
-//    @QueryMapping
-//    public Optional<Profile> profileByName(
-//        @Argument final String name,
-//        final Authentication authentication
-//    ) {
-//        String clientEmail = authentication.getName();
-//        Optional<Client> client = clientService.findByEmail(clientEmail);
-//        if (!client.isPresent()) {
-//            return null;
-//        }
-//
-//        Optional<Profile> profile = profileService.findByName(name);
-//        if (
-//            !profile.isPresent() ||
-//            profile.get().getClientId() != client.get().getId()
-//        ) {
-//            return null;
-//        }
-//
-//        return profile;
-//    }
+    // /**
+    //  * Fetch a profile by name.
+    //  *
+    //  * @param name - The name of the profile
+    //  * @param authentication - The authentication object
+    //  * @return The Profile object
+    //  */
+    //    @QueryMapping
+    //    public Optional<Profile> profileByName(
+    //        @Argument final String name,
+    //        final Authentication authentication
+    //    ) {
+    //        String clientEmail = authentication.getName();
+    //        Optional<Client> client = clientService.findByEmail(clientEmail);
+    //        if (!client.isPresent()) {
+    //            return null;
+    //        }
+    //
+    //        Optional<Profile> profile = profileService.findByName(name);
+    //        if (
+    //            !profile.isPresent() ||
+    //            profile.get().getClientId() != client.get().getId()
+    //        ) {
+    //            return null;
+    //        }
+    //
+    //        return profile;
+    //    }
 
     /**
      * Fetch all ratings in the database.
@@ -146,6 +149,7 @@ public class GraphqlController {
      * @param authentication - The authentication object
      * @return List of ratings objects
      */
+    @PreAuthorize("hasRole('ROLE_rating')")
     @QueryMapping
     public Collection<Rating> ratings(final Authentication authentication) {
         String clientEmail = authentication.getName();
@@ -164,6 +168,7 @@ public class GraphqlController {
      * @param authentication - The authentication object
      * @return Ratings objects
      */
+    @PreAuthorize("hasRole('ROLE_rating')")
     @QueryMapping
     public Optional<Rating> ratingById(
         @Argument final Long id,
@@ -193,6 +198,7 @@ public class GraphqlController {
      * @param authentication - The authentication object
      * @return Ratings objects
      */
+    @PreAuthorize("hasRole('ROLE_rating')")
     @QueryMapping
     public Collection<Rating> ratingsByProfile(
         @Argument final String profileId,
@@ -224,6 +230,7 @@ public class GraphqlController {
      * @param authentication - The authentication object
      * @return List of Ratings objects
      */
+    @PreAuthorize("hasRole('ROLE_rating')")
     @QueryMapping
     public Collection<Rating> ratingsByMovie(
         @Argument final String movieId,
@@ -263,111 +270,76 @@ public class GraphqlController {
     }
 
     /**
-     * Fetch movies by genre from a wishlist.
+     * Fetch a movie by genre.
      *
-     * @param wishlistID - The id of the wishlist.
+     * @param id - The id of the wishlist.
      * @param genre - The genre of the movie
      * @return The Movie object
      */
     @QueryMapping
     public Collection<Movie> moviesByGenre(
-        @Argument final String wishlistID,
-        @Argument final String genre,
-        Authentication authentication
+        @Argument final String id,
+        @Argument final String genre
     ) {
-        String clientEmail = authentication.getName();
-        Optional<Client> client = clientService.findByEmail(clientEmail);
-        if (!client.isPresent()) {
-            return null;
-        }
-
-        Optional<Wishlist> wishlist = wishlistService.findById(Long.parseLong(wishlistID));
-        if (!wishlist.isPresent() || wishlist.get().getClientId() != client.get().getId()) {
-            return null;
-        }
-
-        return wishlist.get().getMoviesByGenre(genre);
+        System.out.println("wishlist id is: " + id);
+        return wishlistService
+            .findById(Long.parseLong(id))
+            .get()
+            .getMoviesByGenre(genre);
     }
 
     /**
-     * Fetch movies by release year from a wishlist.
+     * Fetch a movie by genre.
      *
-     * @param wishlistID - The id of the wishlist.
+     * @param id - The id of the wishlist.
      * @param releaseYear - The release year of the movie
      * @return The Movie object
      */
     @QueryMapping
     public Collection<Movie> moviesByReleaseYear(
-        @Argument final String wishlistID,
-        @Argument final Integer releaseYear,
-        Authentication authentication
+        @Argument final String id,
+        @Argument final Integer releaseYear
     ) {
-        String clientEmail = authentication.getName();
-        Optional<Client> client = clientService.findByEmail(clientEmail);
-        if (!client.isPresent()) {
-            return null;
-        }
-
-        Optional<Wishlist> wishlist = wishlistService.findById(Long.parseLong(wishlistID));
-        if (!wishlist.isPresent() || wishlist.get().getClientId() != client.get().getId()) {
-            return null;
-        }
-
-        return wishlist.get().getMoviesByReleaseYear(releaseYear);
+        return wishlistService
+            .findById(Long.parseLong(id))
+            .get()
+            .getMoviesByReleaseYear(releaseYear);
     }
 
     /**
-     * Fetch movies by runtime from a wishlist.
+     * Fetch a movie by genre.
      *
-     * @param wishlistID - The id of the wishlist.
-     * @param runtimeMinutes - The runtime of the movie
+     * @param id - The id of the wishlist.
+     * @param runtime - The runtime of the movie
      * @return The Movie object
      */
     @QueryMapping
     public Collection<Movie> moviesByRuntime(
-        @Argument final String wishlistID,
-        @Argument final Integer runtimeMinutes,
-        Authentication authentication
+        @Argument final String id,
+        @Argument final int runtime
     ) {
-        String clientEmail = authentication.getName();
-        Optional<Client> client = clientService.findByEmail(clientEmail);
-        if (!client.isPresent()) {
-            return null;
-        }
-
-        Optional<Wishlist> wishlist = wishlistService.findById(Long.parseLong(wishlistID));
-        if (!wishlist.isPresent() || wishlist.get().getClientId() != client.get().getId()) {
-            return null;
-        }
-
-        return wishlist.get().getMoviesByRuntime(runtimeMinutes);
+        return wishlistService
+            .findById(Long.parseLong(id))
+            .get()
+            .getMoviesByRuntime(runtime);
     }
 
     /**
-     * Fetch movies by critic score from a wishlist
+     * Fetch a movie by genre.
      *
-     * @param wishlistID - The id of the wishlist.
+     * @param id - The id of the wishlist.
      * @param criticScore - The critic score of the movie
      * @return The Movie object
      */
     @QueryMapping
     public Collection<Movie> moviesByCriticScore(
-        @Argument final String wishlistID,
-        @Argument final int criticScore,
-        Authentication authentication
+        @Argument final String id,
+        @Argument final int criticScore
     ) {
-        String clientEmail = authentication.getName();
-        Optional<Client> client = clientService.findByEmail(clientEmail);
-        if (!client.isPresent()) {
-            return null;
-        }
-
-        Optional<Wishlist> wishlist = wishlistService.findById(Long.parseLong(wishlistID));
-        if (!wishlist.isPresent() || wishlist.get().getClientId() != client.get().getId()) {
-            return null;
-        }
-
-        return wishlist.get().getMoviesByCriticScore(criticScore);
+        return wishlistService
+            .findById(Long.parseLong(id))
+            .get()
+            .getMoviesByCriticScore(criticScore);
     }
 
     /**
